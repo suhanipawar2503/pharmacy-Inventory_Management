@@ -1,0 +1,6 @@
+{
+  "name": "Smart Pharmacy Management System",
+  "description": "Professional Smart Pharmacy Management System with Inventory, Sales, Purchases, Expiry Tracking, OCR Bill Scanning, Reports & Distributors.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
