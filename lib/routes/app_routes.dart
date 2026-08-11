@@ -4,7 +4,11 @@ import '../screens/splash_screen.dart';
 import '../screens/login_screen.dart';
 import '../screens/product_details_screen.dart';
 import '../screens/add_edit_product_screen.dart';
-import '../widgets/common/placeholder_screen.dart';
+import '../screens/distributor_screens.dart';
+import '../screens/purchase_screens.dart';
+import '../screens/sales_screens.dart';
+import '../screens/expiry_screen.dart';
+import '../screens/ocr_bill_scan_screen.dart';
 
 class AppRoutes {
   static const String splash = '/';
@@ -17,6 +21,8 @@ class AppRoutes {
   static const String purchaseDetails = '/purchase_details';
   static const String addDistributor = '/add_distributor';
   static const String distributorDetails = '/distributor_details';
+  static const String distributorList = '/distributor_list';
+  static const String purchaseList = '/purchase_list';
   static const String createBill = '/create_bill';
   static const String invoice = '/invoice';
   static const String expiry = '/expiry';
@@ -35,39 +41,52 @@ class AppRoutes {
       case editProduct:
         final id = settings.arguments as String?;
         return MaterialPageRoute(
-            builder: (_) => AddEditProductScreen(medicineIdToEdit: id));
+          builder: (_) => AddEditProductScreen(medicineIdToEdit: id),
+        );
       case productDetails:
         final id = settings.arguments as String;
         return MaterialPageRoute(
-            builder: (_) => ProductDetailsScreen(medicineId: id));
+          builder: (_) => ProductDetailsScreen(medicineId: id),
+        );
       case addPurchase:
-        return MaterialPageRoute(
-            builder: (_) => const PlaceholderScreen(title: "Add Purchase"));
+        return MaterialPageRoute(builder: (_) => const AddPurchaseScreen());
       case purchaseDetails:
-        final id = settings.arguments as String?;
+        final id = settings.arguments as String;
         return MaterialPageRoute(
-            builder: (_) => PlaceholderScreen(title: "Purchase Details: $id"));
+          builder: (_) => PurchaseDetailsScreen(purchaseId: id),
+        );
+      case purchaseList:
+        return MaterialPageRoute(builder: (_) => const PurchaseListScreen());
       case addDistributor:
         return MaterialPageRoute(
-            builder: (_) => const PlaceholderScreen(title: "Add Distributor"));
+          builder: (_) => const AddDistributorScreen(),
+        );
       case distributorDetails:
-        final id = settings.arguments as String?;
+        final id = settings.arguments as String;
         return MaterialPageRoute(
-            builder: (_) =>
-                PlaceholderScreen(title: "Distributor Details: $id"));
+          builder: (_) => DistributorDetailsScreen(distributorId: id),
+        );
+      case distributorList:
+        return MaterialPageRoute(
+          builder: (_) => const DistributorListScreen(),
+        );
       case createBill:
         return MaterialPageRoute(
-            builder: (_) => const PlaceholderScreen(title: "Create Bill"));
+          builder: (_) => const CreateBillScreen(),
+        );
       case invoice:
-        final id = settings.arguments as String?;
+        final id = settings.arguments as String;
         return MaterialPageRoute(
-            builder: (_) => PlaceholderScreen(title: "Invoice: $id"));
+          builder: (_) => InvoiceScreen(saleId: id),
+        );
       case expiry:
         return MaterialPageRoute(
-            builder: (_) => const PlaceholderScreen(title: "Expiry Management"));
+          builder: (_) => const ExpiryScreen(),
+        );
       case ocrScan:
         return MaterialPageRoute(
-            builder: (_) => const PlaceholderScreen(title: "OCR Bill Scan"));
+          builder: (_) => const OcrBillScanScreen(),
+        );
       default:
         return MaterialPageRoute(
           builder: (_) => Scaffold(

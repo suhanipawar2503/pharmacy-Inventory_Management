@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../core/theme/app_colors.dart';
 import 'home_screen.dart';
 import 'inventory_screen.dart';
-import 'sales_screen.dart';
+import 'sales_screens.dart';
 import 'reports_screen.dart';
 import 'profile_screen.dart';
 
@@ -19,7 +19,7 @@ class _MainContainerState extends State<MainContainer> {
   final List<Widget> _screens = [
     const HomeScreen(),
     const InventoryScreen(),
-    const SalesScreen(),
+    const SalesListScreen(),
     const ReportsScreen(),
     const ProfileScreen(),
   ];
@@ -33,7 +33,10 @@ class _MainContainerState extends State<MainContainer> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _screens[_selectedIndex],
+      body: IndexedStack(
+        index: _selectedIndex,
+        children: _screens,
+      ),
       bottomNavigationBar: NavigationBar(
         selectedIndex: _selectedIndex,
         onDestinationSelected: _onItemTapped,

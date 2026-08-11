@@ -50,10 +50,6 @@ class HomeScreen extends StatelessWidget {
                     icon: Icons.inventory_2_outlined,
                     iconBgColor: AppColors.primaryBlueLight,
                     iconColor: AppColors.primaryBlue,
-                    onTap: () {
-                      // Handled by tab navigation in MainContainer usually, 
-                      // or can be linked to a specific route
-                    },
                   ),
                 ),
                 const SizedBox(width: 10),
@@ -78,9 +74,6 @@ class HomeScreen extends StatelessWidget {
                     icon: Icons.point_of_sale_outlined,
                     iconBgColor: AppColors.successGreenLight,
                     iconColor: AppColors.successGreen,
-                    onTap: () {
-                      // Handled by tab navigation
-                    },
                   ),
                 ),
                 const SizedBox(width: 10),
@@ -91,9 +84,6 @@ class HomeScreen extends StatelessWidget {
                     icon: Icons.production_quantity_limits_outlined,
                     iconBgColor: AppColors.alertRedLight,
                     iconColor: AppColors.alertRed,
-                    onTap: () {
-                      // Handled by tab navigation
-                    },
                   ),
                 ),
               ],
@@ -131,17 +121,17 @@ class HomeScreen extends StatelessWidget {
               children: [
                 Expanded(
                   child: QuickActionButton(
-                    title: "Add Purchase",
-                    icon: Icons.shopping_bag,
+                    title: "Distributors",
+                    icon: Icons.local_shipping_outlined,
                     color: AppColors.secondaryTeal,
                     bgColor: AppColors.secondaryTealLight,
-                    onTap: () => Navigator.pushNamed(context, AppRoutes.addPurchase),
+                    onTap: () => Navigator.pushNamed(context, AppRoutes.distributorList),
                   ),
                 ),
                 const SizedBox(width: 10),
                 Expanded(
                   child: QuickActionButton(
-                    title: "Scan Bill (OCR)",
+                    title: "Scan Bill",
                     icon: Icons.qr_code_scanner,
                     color: AppColors.warningOrange,
                     bgColor: AppColors.warningOrangeLight,
@@ -157,7 +147,7 @@ class HomeScreen extends StatelessWidget {
               title: "Recent Sales Activity",
               actionText: "View All",
               onActionClick: () {
-                // Handled by tab navigation
+                // Should navigate to Sales Tab
               },
             ),
             const SizedBox(height: 8),
@@ -192,15 +182,13 @@ class HomeScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                  const Text(
                     "Smart Care Pharmacy",
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
                     ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: 4),
                   Text(
@@ -209,13 +197,10 @@ class HomeScreen extends StatelessWidget {
                       fontSize: 12,
                       color: Colors.white.withValues(alpha: 0.85),
                     ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
                   ),
                 ],
               ),
             ),
-            const SizedBox(width: 12),
             Container(
               width: 44,
               height: 44,
@@ -268,8 +253,6 @@ class HomeScreen extends StatelessWidget {
                         fontWeight: FontWeight.bold,
                         color: color,
                       ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
                     ),
                     Text(
                       "$expiredCount Expired • $expiringCount Expiring in 30 Days",
@@ -277,8 +260,6 @@ class HomeScreen extends StatelessWidget {
                         fontSize: 12,
                         color: AppColors.textPrimary,
                       ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
                     ),
                   ],
                 ),

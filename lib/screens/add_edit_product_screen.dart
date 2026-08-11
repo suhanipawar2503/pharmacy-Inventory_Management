@@ -28,6 +28,7 @@ class _AddEditProductScreenState extends State<AddEditProductScreen> {
   late TextEditingController _sellingPriceController;
   late TextEditingController _quantityController;
   late TextEditingController _expiryDateController;
+  late TextEditingController _thresholdController;
 
   String _selectedCategory = "Antibiotics";
   String _selectedDistributor = "";
@@ -66,6 +67,7 @@ class _AddEditProductScreenState extends State<AddEditProductScreen> {
     _sellingPriceController = TextEditingController(text: _existingMedicine?.sellingPrice.toString() ?? "");
     _quantityController = TextEditingController(text: _existingMedicine?.quantity.toString() ?? "50");
     _expiryDateController = TextEditingController(text: _existingMedicine?.expiryDate ?? "2027-12-31");
+    _thresholdController = TextEditingController(text: _existingMedicine?.minStockThreshold.toString() ?? "20");
 
     if (_existingMedicine != null) {
       _selectedCategory = _existingMedicine!.category;
@@ -88,6 +90,7 @@ class _AddEditProductScreenState extends State<AddEditProductScreen> {
     _sellingPriceController.dispose();
     _quantityController.dispose();
     _expiryDateController.dispose();
+    _thresholdController.dispose();
     super.dispose();
   }
 
@@ -117,6 +120,7 @@ class _AddEditProductScreenState extends State<AddEditProductScreen> {
     final purchasePrice = double.tryParse(_purchasePriceController.text) ?? 0.0;
     final sellingPrice = double.tryParse(_sellingPriceController.text) ?? 0.0;
     final quantity = int.tryParse(_quantityController.text) ?? 0;
+    final threshold = int.tryParse(_thresholdController.text) ?? 20;
 
     if (_existingMedicine == null) {
       final newMed = Medicine(
@@ -128,6 +132,7 @@ class _AddEditProductScreenState extends State<AddEditProductScreen> {
         purchasePrice: purchasePrice,
         sellingPrice: sellingPrice,
         quantity: quantity,
+        minStockThreshold: threshold,
         expiryDate: _expiryDateController.text.trim(),
         distributorName: _selectedDistributor,
       );
@@ -144,6 +149,7 @@ class _AddEditProductScreenState extends State<AddEditProductScreen> {
         purchasePrice: purchasePrice,
         sellingPrice: sellingPrice,
         quantity: quantity,
+        minStockThreshold: threshold,
         expiryDate: _expiryDateController.text.trim(),
         distributorName: _selectedDistributor,
       );
@@ -176,177 +182,189 @@ class _AddEditProductScreenState extends State<AddEditProductScreen> {
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            // Medicine Image Placeholder Box
-            GestureDetector(
-              onTap: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text("Product Image Selected / Updated")),
-                );
-              },
-              child: Container(
-                width: double.infinity,
-                height: 110,
-                decoration: BoxDecoration(
-                  color: AppColors.primaryBlueLight,
-                  borderRadius: BorderRadius.circular(14),
-                  border: Border.all(color: AppColors.primaryBlue),
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
-                    Icon(
-                      Icons.add_a_photo,
-                      color: AppColors.primaryBlue,
-                      size: 32,
-                    ),
-                    SizedBox(height: 4),
-                    Text(
-                      "Tap to upload product image",
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              // Medicine Image Placeholder Box
+              GestureDetector(
+                onTap: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text("Product Image Selected / Updated")),
+                  );
+                },
+                child: Container(
+                  width: double.infinity,
+                  height: 110,
+                  decoration: BoxDecoration(
+                    color: AppColors.primaryBlueLight,
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(color: AppColors.primaryBlue),
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const [
+                      Icon(
+                        Icons.add_a_photo,
                         color: AppColors.primaryBlue,
+                        size: 32,
                       ),
-                    ),
-                  ],
+                      SizedBox(height: 4),
+                      Text(
+                        "Tap to upload product image",
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.primaryBlue,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(height: 16),
-            CustomTextField(
-              controller: _nameController,
-              label: "Medicine Name",
-              hint: "e.g. Paracetamol 650mg",
-              leadingIcon: Icons.medication,
-            ),
-            const SizedBox(height: 14),
-            CustomTextField(
-              controller: _companyController,
-              label: "Company / Manufacturer",
-              hint: "e.g. Cipla Ltd",
-              leadingIcon: Icons.business,
-            ),
-            const SizedBox(height: 14),
-            
-            // Category Dropdown
-            _buildDropdownField(
-              label: "Category",
-              value: _selectedCategory,
-              icon: Icons.category,
-              items: _categoryList,
-              onChanged: (val) {
-                setState(() {
-                  _selectedCategory = val!;
-                });
-              },
-            ),
-            const SizedBox(height: 14),
-            
-            CustomTextField(
-              controller: _batchNumberController,
-              label: "Batch Number",
-              hint: "e.g. BAT-2026-88",
-              leadingIcon: Icons.qr_code,
-            ),
-            const SizedBox(height: 14),
-            
-            Row(
-              children: [
-                Expanded(
-                  child: CustomTextField(
-                    controller: _purchasePriceController,
-                    label: "Purchase Price (₹)",
-                    hint: "45.0",
-                    leadingIcon: Icons.attach_money,
-                    keyboardType: TextInputType.number,
-                  ),
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: CustomTextField(
-                    controller: _sellingPriceController,
-                    label: "Selling Price (₹)",
-                    hint: "75.0",
-                    leadingIcon: Icons.sell,
-                    keyboardType: TextInputType.number,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 14),
-            
-            Row(
-              children: [
-                Expanded(
-                  child: CustomTextField(
-                    controller: _quantityController,
-                    label: "Quantity",
-                    hint: "100",
-                    leadingIcon: Icons.format_list_numbered,
-                    keyboardType: TextInputType.number,
-                  ),
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: CustomTextField(
-                    controller: _expiryDateController,
-                    label: "Expiry Date (YYYY-MM-DD)",
-                    hint: "2028-05-31",
-                    leadingIcon: Icons.calendar_today,
-                    trailingIcon: IconButton(
-                      icon: const Icon(Icons.date_range, color: AppColors.primaryBlue),
-                      onPressed: () => _selectDate(context),
+              const SizedBox(height: 16),
+              CustomTextField(
+                controller: _nameController,
+                label: "Medicine Name",
+                hint: "e.g. Paracetamol 650mg",
+                leadingIcon: Icons.medication,
+              ),
+              const SizedBox(height: 14),
+              CustomTextField(
+                controller: _companyController,
+                label: "Company / Manufacturer",
+                hint: "e.g. Cipla Ltd",
+                leadingIcon: Icons.business,
+              ),
+              const SizedBox(height: 14),
+              
+              // Category Dropdown
+              _buildDropdownField(
+                label: "Category",
+                value: _selectedCategory,
+                icon: Icons.category,
+                items: _categoryList,
+                onChanged: (val) {
+                  setState(() {
+                    _selectedCategory = val!;
+                  });
+                },
+              ),
+              const SizedBox(height: 14),
+              
+              CustomTextField(
+                controller: _batchNumberController,
+                label: "Batch Number",
+                hint: "e.g. BAT-2026-88",
+                leadingIcon: Icons.qr_code,
+              ),
+              const SizedBox(height: 14),
+              
+              Row(
+                children: [
+                  Expanded(
+                    child: CustomTextField(
+                      controller: _purchasePriceController,
+                      label: "Purchase Price (₹)",
+                      hint: "45.0",
+                      leadingIcon: Icons.attach_money,
+                      keyboardType: TextInputType.number,
                     ),
                   ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: CustomTextField(
+                      controller: _sellingPriceController,
+                      label: "Selling Price (₹)",
+                      hint: "75.0",
+                      leadingIcon: Icons.sell,
+                      keyboardType: TextInputType.number,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 14),
+              
+              Row(
+                children: [
+                  Expanded(
+                    child: CustomTextField(
+                      controller: _quantityController,
+                      label: "Quantity",
+                      hint: "100",
+                      leadingIcon: Icons.format_list_numbered,
+                      keyboardType: TextInputType.number,
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: CustomTextField(
+                      controller: _thresholdController,
+                      label: "Min Stock Threshold",
+                      hint: "20",
+                      leadingIcon: Icons.warning_amber_rounded,
+                      keyboardType: TextInputType.number,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 14),
+
+              CustomTextField(
+                controller: _expiryDateController,
+                label: "Expiry Date (YYYY-MM-DD)",
+                hint: "2028-05-31",
+                leadingIcon: Icons.calendar_today,
+                trailingIcon: IconButton(
+                  icon: const Icon(Icons.date_range, color: AppColors.primaryBlue),
+                  onPressed: () => _selectDate(context),
                 ),
-              ],
-            ),
-            const SizedBox(height: 14),
-            
-            // Distributor Selector Dropdown
-            _buildDropdownField(
-              label: "Primary Distributor",
-              value: _selectedDistributor,
-              icon: Icons.local_shipping,
-              items: provider.distributors.map((d) => d.name).toList(),
-              onChanged: (val) {
-                setState(() {
-                  _selectedDistributor = val!;
-                });
-              },
-            ),
-            const SizedBox(height: 24),
-            
-            Row(
-              children: [
-                Expanded(
-                  child: OutlinedButton(
-                    onPressed: () => Navigator.pop(context),
-                    style: OutlinedButton.styleFrom(
-                      fixedSize: const Size.fromHeight(52),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
+              ),
+              const SizedBox(height: 14),
+              
+              // Distributor Selector Dropdown
+              _buildDropdownField(
+                label: "Primary Distributor",
+                value: _selectedDistributor,
+                icon: Icons.local_shipping,
+                items: provider.distributors.map((d) => d.name).toList(),
+                onChanged: (val) {
+                  setState(() {
+                    _selectedDistributor = val!;
+                  });
+                },
+              ),
+              const SizedBox(height: 24),
+              
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () => Navigator.pop(context),
+                      style: OutlinedButton.styleFrom(
+                        fixedSize: const Size.fromHeight(52),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+                        side: const BorderSide(color: AppColors.surfaceBorder),
                       ),
-                      side: const BorderSide(color: AppColors.surfaceBorder),
-                    ),
-                    child: const Text(
-                      "Cancel",
-                      style: TextStyle(color: AppColors.textSecondary),
+                      child: const Text(
+                        "Cancel",
+                        style: TextStyle(color: AppColors.textSecondary),
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: CustomButton(
-                    text: _existingMedicine == null ? "Save Product" : "Update Product",
-                    onPressed: _saveProduct,
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: CustomButton(
+                      text: _existingMedicine == null ? "Save Product" : "Update Product",
+                      onPressed: _saveProduct,
+                    ),
                   ),
-                ),
-              ],
-            ),
-          ],
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -363,7 +381,7 @@ class _AddEditProductScreenState extends State<AddEditProductScreen> {
     String? effectiveValue = items.contains(value) ? value : (items.isNotEmpty ? items.first : null);
 
     return DropdownButtonFormField<String>(
-      value: effectiveValue,
+      initialValue: effectiveValue,
       decoration: InputDecoration(
         labelText: label,
         prefixIcon: Icon(icon, color: AppColors.primaryBlue),
